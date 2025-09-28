@@ -82,5 +82,5 @@ A arquitetura do projeto segue o padrão de Camadas Separadas para garantir alta
 | POST | ``/users`` | Pública | ``UsersController`` | register | Cria novo usuário e conta (com saldo inicial). |
 | POST | ``/login`` | Pública | ``UsersController`` | login | Autentica o usuário e retorna o JWT. |
 | GET | ``/account`` | JWT | ``AccountController`` | getAccount | Retorna os dados do usuário logado. |
-| POST | ``/transactions`` | JWT | ``TransfersController`` | createTransfers | Executa uma transferência de conta para conta. |
+| POST | ``/transfers`` | JWT | ``TransfersController`` | createTransfers | Executa uma transferência de conta para conta. |
 | GET | ``/history`` | JWT | ``HistoryController`` | getTransfersHistory | Retorna o histórico de transações (enviadas e recebidas). |
