@@ -1,5 +1,5 @@
-import 'dotenv/config';
-import type { Knex } from 'knex';
+import 'dotenv/config'
+import type { Knex } from 'knex'
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -34,6 +34,6 @@ const config: { [key: string]: Knex.Config } = {
       directory: './seeds',
     },
   },
-};
+}
 
-export default config;
+export default config

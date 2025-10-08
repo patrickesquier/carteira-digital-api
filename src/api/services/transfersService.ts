@@ -1,4 +1,5 @@
 import { knexConnection } from "../../database/connection"
+import { accountService } from "./accountService"
 
 interface CreateTransfersData  {
     senderUserId: string
@@ -14,17 +15,20 @@ export const transfersService = {
         return knexConnection.transaction(async(trx) => {
 
             const sender = await trx('users').where({ id: senderUserId }).first()
+
             const recipient = await trx('users')
                 .where({ email: receiverEmail })
                 .join('accounts', 'users.id', '=', 'accounts.user_id')
                 .select('accounts.*')
                 .first()
 
+            const currentBalance = await accountService.getAccountBalance(sender.id)
+
             if (!sender || !recipient) {
                 throw new Error('Sender or recipient not found')
             }
 
-            if (sender.balance < amount) {
+            if (currentBalance < amount) {
                 throw new Error('Insufficient funds')
             }
 

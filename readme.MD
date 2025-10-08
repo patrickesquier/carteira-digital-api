@@ -47,6 +47,8 @@ POSTGRES_USER=root
 POSTGRES_PASSWORD=senhadificil123
 POSTGRES_DB=minha_carteira
 
+SALTROEUNDS=10
+
 ```
 
 ### 3. Execução
@@ -79,8 +81,103 @@ A arquitetura do projeto segue o padrão de Camadas Separadas para garantir alta
 
 | Método | Caminho | Proteção | Controller | Função | Descrição
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| POST | ``/users`` | Pública | ``UsersController`` | register | Cria novo usuário e conta (com saldo inicial). |
+| POST | ``/register`` | Pública | ``UsersController`` | register | Cria novo usuário e conta (com saldo inicial). |
 | POST | ``/login`` | Pública | ``UsersController`` | login | Autentica o usuário e retorna o JWT. |
+| POST | ``/logout`` | Pública | ``UsersController`` | logout | Apagar o tocken dos cookies. |
 | GET | ``/account`` | JWT | ``AccountController`` | getAccount | Retorna os dados do usuário logado. |
 | POST | ``/transfers`` | JWT | ``TransfersController`` | createTransfers | Executa uma transferência de conta para conta. |
 | GET | ``/history`` | JWT | ``HistoryController`` | getTransfersHistory | Retorna o histórico de transações (enviadas e recebidas). |
+
+## 🧪 Estrutura de Teste Manual
+
+Você pode testar o fluxo completo com as seguintes etapas:
+
+---
+
+### **1️⃣ Criar dois usuários**
+
+```bash
+POST /register
+{
+  "name": "Usuário 1",
+  "email": "usuario1@email.com",
+  "password_hash": "12345"
+}
+```
+
+```bash
+POST /register
+{
+  "name": "Usuário 2",
+  "email": "usuario2@email.com",
+  "password_hash": "12345"
+}
+```
+
+### **2️⃣ Fazer login em um dos usuários**
+
+```bash
+POST /login
+{
+  "email": "usuario1@email.com",
+  "password_hash": "12345"
+}
+```
+
+### **3️⃣ Consultar saldo**
+
+```bash
+GET /account
+```
+
+### **4️⃣ Criar uma transferência**
+
+```bash
+POST /transfers
+{
+  "receiver_email": "usuario2@email.com",
+  "amount": 10,
+  "description": "Primeiro envio"
+}
+```
+
+### **5️⃣ Ver histórico de transações**
+
+```bash
+GET /history
+```
+
+### **6️⃣ Fazer logout**
+
+
+```bash
+POST /logout
+```
+
+---
+
+## 🧱 Tecnologias Utilizadas
+
+- **Node.js** — ambiente de execução  
+- **Fastify** — framework web leve e rápido  
+- **TypeScript** — tipagem estática e segurança de código  
+- **Knex.js** — query builder para PostgreSQL  
+- **JWT** — autenticação segura  
+- **Docker** — ambiente isolado e padronizado  
+- **Zod** — validação de dados  
+
+---
+
+## 🧩 Melhorias Futuras
+
+- [ ] Endpoint para **depósitos e saques**
+- [ ] Implementar **limite diário de transferências**
+- [ ] Adicionar **Swagger** para documentação interativa da API
+
+--- 
+
+## 🧑‍💻 Autor
+
+**Patrick Esquier Silvy**  
+💼 Desenvolvedor 
+📧 [patricksilvy.contato@gmail.com](mailto:patricksilvy.contato@gmail.com)

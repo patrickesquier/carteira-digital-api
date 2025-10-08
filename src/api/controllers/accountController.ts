@@ -1,10 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { accountService } from "../services/accountService"
-
-interface UserPayload {
-    id: string;
-    email: string;
-}
+import { UserPayload } from "../schemas/usersSchemas"
 
 export const accountController = {
     async getAccount(request: FastifyRequest, reply: FastifyReply) {

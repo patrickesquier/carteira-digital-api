@@ -1,22 +1,12 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { transfersService } from "../services/transfersService"
-
-interface CreateTransfersData  {
-    senderUserId: string
-    receiver_email: string
-    amount: number
-    description?: string
-}
-
-interface UserPayload {
-    id: string;
-    email: string;
-}
+import { UserPayload } from "../schemas/usersSchemas"
+import { CreateTransfersData } from "../schemas/transfersSchemas"
 
 export const transfersController = {
     async createTransfers(request: FastifyRequest<{ Body: CreateTransfersData }>, reply: FastifyReply) {
         try {
-            const sender_id = (request.user as UserPayload).id;
+            const sender_id = (request.user as UserPayload).id
             const { receiver_email, amount, description } = request.body
 
             await transfersService.createTransfers({
@@ -38,8 +28,14 @@ export const transfersController = {
                 if (error.message === "Cannot transfer to yourself") {
                     return reply.status(400).send({ message: "Cannot transfer to yourself" })
                 }
-                return reply.status(500).send({ message: "Internal server error" })
+                if (error.message === "Sender account not found") {
+                    return reply.status(500).send({ message: "System error: sender account missing" })
+                }
+
+                return reply.status(500).send({ message: error.message || "Internal server error" })
             }
+
+            return reply.status(500).send({ message: 'Internal server error' })
         }
     }
 }

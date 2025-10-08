@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import bcrypt from "bcrypt"
 import { knexConnection } from "../../database/connection"
 
@@ -20,7 +21,7 @@ export const userService = {
 
         return knexConnection.transaction(async(trx) => {
             try {
-                const hashedPassword = await bcrypt.hash(password_hash, 10)
+                const hashedPassword = await bcrypt.hash(password_hash, parseInt(process.env.SALTROEUNDS ? process.env.SALTROEUNDS : '10'))
 
                 const [newUser] = await trx('users')
                     .insert({

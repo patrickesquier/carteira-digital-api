@@ -1,16 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { userService } from "../services/userService"
-
-interface RegisterUserBody {
-    name: string
-    email: string
-    password_hash: string
-}
-
-interface LoginUserBody {
-    email: string
-    password_hash: string
-}
+import { LoginUserBody, RegisterUserBody } from "../schemas/usersSchemas"
 
 export const usersController = {
     async registerUser(request: FastifyRequest<{ Body: RegisterUserBody }>, reply: FastifyReply) {
@@ -39,14 +29,34 @@ export const usersController = {
                 email: user.email
             })
 
-            return reply.status(200).send(token)
+            reply.setCookie('auth_token', token, {
+                httpOnly: true, 
+                secure: false,   
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 3600000 
+            }).status(200).send({ message: 'Login successful' })
+
         } catch (error) {
              if (error instanceof Error) {
                 if (error.message === "Invalid credentials") {
-                    return reply.status(401).send({ message: 'Invalid credentials' });
+                    return reply.status(401).send({ message: 'Invalid credentials' })
                 }
             }
 
+            return reply.status(500).send({ message: 'Internal server error' })
+        }
+    },
+    async logoutUser(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            reply.clearCookie('auth_token', {
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+            })
+
+            return reply.status(200).send({ message: 'Logout successful' })
+        } catch (error) {
             return reply.status(500).send({ message: 'Internal server error' })
         }
     }

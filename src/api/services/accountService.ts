@@ -6,6 +6,7 @@ export const accountService = {
             .select('balance')
             .where({ user_id: userId })
             .first()
+            .forUpdate()
 
         const currentBalance = account ? account.balance : 0
 
